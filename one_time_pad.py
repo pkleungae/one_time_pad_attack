@@ -38,7 +38,7 @@ def xor_two_lists(a, b):
         s.append(b[i])
     return s
 
-# crib drag solver
+# crib drag solver, create an class instead of a single function to handle do this. This way provide easier way to manage data need to be processed by having data field.  
 class cribDrag(object):
     def __init__(self):
         # c0 and c1 are ciphertexts
@@ -50,16 +50,19 @@ class cribDrag(object):
     def guess_word(self, word):
         word_length = len(word)
         word_int = s_to_int(word)
-        # for parsing
+        # for parsing, only match string containing following char
         charset = '^['+'a-zA-Z0-9.,?! :;\'"'+']+$'
         # put the intermediate results in log.txt file
         with open("log.txt", "a") as myfile:
             myfile.write("guess word: \""+word+"\"")
+            #set up range that window can slide
             for i in range(len(self.c0_xor_c1)-word_length+1):
+                #slide the window
                 z = self.c0_xor_c1[i:i+word_length]
                 crib = xor_two_lists(z, word_int)
                 test_string = int_to_s(crib)
                 if (re.search(charset, test_string)):
+                    #record the position of crib
                     myfile.write("\n[%d]" % i)
                     myfile.write(test_string)
         myfile.close()
